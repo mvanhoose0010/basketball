@@ -1,33 +1,63 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF‑8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kentucky Basketball Countdown</title>
+  <title>Kentucky Basketball Countdown & Roster</title>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #0033A0;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/9/9a/Rupp_Arena_Kentucky.jpg') no-repeat center center fixed;
+      background-size: cover;
       color: white;
       overflow: hidden;
+      position: relative;
+      z-index: 0;
     }
-
-    h1 {
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 0;
+    }
+    #content {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1, h2 {
       text-align: center;
-      margin-top: 60px;
-      font-size: 3rem;
     }
-
     #countdown {
       text-align: center;
       font-size: 2rem;
-      margin-top: 20px;
+      margin: 20px auto;
       font-weight: bold;
     }
-
-    /* Basketballs animation */
+    /* roster styling */
+    #roster {
+      max-width: 800px;
+      margin: 40px auto;
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 12px;
+      user-select: none;
+      pointer-events: none;
+    }
+    #roster ul {
+      list-style: none;
+      padding: 0;
+    }
+    #roster li {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+      font-size: 1.1rem;
+    }
+    /* basketball animation */
     .basketball {
       position: absolute;
       top: -100px;
@@ -37,61 +67,105 @@
       background-size: cover;
       animation: fall linear infinite;
       opacity: 0.85;
+      cursor: pointer;
     }
-
     @keyframes fall {
-      0% {
-        transform: translateY(-100px) rotate(0deg);
-      }
-      100% {
-        transform: translateY(110vh) rotate(360deg);
+      0% { transform: translateY(-100px) rotate(0deg); }
+      100% { transform: translateY(110vh) rotate(360deg); }
+    }
+    .confetti {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background-color: #FFD700;
+      opacity: 0.9;
+      pointer-events: none;
+      animation: confetti-fall 1.2s forwards ease-out;
+      border-radius: 2px;
+    }
+    @keyframes confetti-fall {
+      to {
+        transform: translate(var(--x, 0), 100vh) rotate(360deg);
+        opacity: 0;
       }
     }
   </style>
 </head>
 <body>
-  <h1>Countdown to Kentucky Basketball Tip-Off</h1>
-  <div id="countdown">Loading...</div>
+  <div class="overlay"></div>
+  <div id="content">
+    <h1>Countdown to Kentucky Basketball Tip‑Off</h1>
+    <div id="countdown">Loading...</div>
 
-  <!-- Script for countdown -->
+    <h2>2025‑26 Wildcats Roster</h2>
+    <div id="roster">
+      <ul>
+        <li>Otega 'Warrants in Oklahoma' Oweh (G)</li>
+        <li>Denzel 'Washington' Aberdeen (G)</li>
+        <li>Jasper 'Home Body' Johnson (G)</li>
+        <li>Kam 'Shutter' Williams (F)</li>
+        <li>Andrija 'Legal Resident' Jelavić (F)</li>
+        <li>Collin 'Half Court Morman' Chandler (G)</li>
+        <li>Trent 'Mountain Mamba' Noah (F)</li>
+        <li>Brandon 'For 3' Garrison (F)</li>
+        <li>Jaland 'Shot Qualuty' Lowe (G)</li>
+        <li>Jayden 'Patient 0' Quaintance (F)</li>
+        <li>Braydon 'Obscure' Hawthorne (F)</li>
+        <li>Mouhamed 'Meta World Fleece' Dioubate (F)</li>
+        <li>Malachi 'Malaki' Moreno (C)</li>
+        <li>Reece 'E-Cups' Potter (C)</li>
+      </ul>
+    </div>
+  </div>
+
   <script>
     const seasonStart = new Date("November 4, 2025 19:00:00").getTime();
     const countdown = document.getElementById("countdown");
-
     function updateCountdown() {
-      const now = new Date().getTime();
+      const now = Date.now();
       const distance = seasonStart - now;
-
       if (distance < 0) {
         countdown.innerHTML = "It's Game Time!";
         return;
       }
-
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      countdown.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      const d = Math.floor(distance / (1000*60*60*24));
+      const h = Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+      const m = Math.floor((distance%(1000*60*60))/(1000*60));
+      const s = Math.floor((distance%(1000*60))/1000);
+      countdown.innerHTML = `${d}d ${h}h ${m}m ${s}s`;
     }
-
     setInterval(updateCountdown, 1000);
     updateCountdown();
   </script>
-
-  <!-- Script for raining basketballs -->
   <script>
-    function createBasketball() {
-      const ball = document.createElement('div');
-      ball.classList.add('basketball');
-      ball.style.left = Math.random() * 100 + 'vw';
-      ball.style.animationDuration = (Math.random() * 2 + 3) + 's';
-      document.body.appendChild(ball);
-
-      setTimeout(() => ball.remove(), 6000);
+    function createConfetti(x, y) {
+      const colors = ['#FFD700','#FF4500','#1E90FF','#32CD32','#FF69B4'];
+      for(let i=0; i<20; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = x + 'px';
+        confetti.style.top = y + 'px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.setProperty('--x', (Math.random() * 200 - 100) + 'px');
+        document.body.appendChild(confetti);
+        confetti.addEventListener('animationend', () => confetti.remove());
+      }
     }
 
-    setInterval(createBasketball, 300);
+    function createBasketball() {
+      const b = document.createElement('div');
+      b.className='basketball';
+      b.style.left = Math.random()*100+'vw';
+      b.style.animationDuration = (Math.random()*2+3)+'s';
+      b.addEventListener('click', (e) => {
+        const rect = b.getBoundingClientRect();
+        createConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        b.remove();
+      });
+      document.body.appendChild(b);
+      setTimeout(()=>b.remove(),6000);
+    }
+    setInterval(createBasketball, 1000); // reduced spawn rate
   </script>
 </body>
 </html>
